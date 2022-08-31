@@ -5,6 +5,14 @@
 //  Created by Neethu Kuruvilla on 5/19/22.
 //
 
+/*
+ Tasks done in this file:
+ -gets steps and ingredients from the ID of the selected recipe
+ -process data to properly split up the steps and append them to the array
+ -increasing ingredient count so that tableview is proper length
+ -
+ */
+
 import UIKit
 
 class RecipeVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
@@ -20,7 +28,7 @@ class RecipeVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     @IBOutlet weak var instructionsTableView: UITableView!
     
-    var currentRecipe = ""
+    var currentRecipeName = ""
     var currentRecipeID = ""
     
     var currentRecipeIngredients = [String](repeating: "", count: 20)
@@ -38,8 +46,8 @@ class RecipeVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
         instructionsTableView.delegate = self
         instructionsTableView.dataSource = self
         
-        if currentRecipe != ""{
-            mealNameTL.text = currentRecipe
+        if currentRecipeName != ""{
+            mealNameTL.text = currentRecipeName
             
             
             fetchRecipe { R in
@@ -48,8 +56,8 @@ class RecipeVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
                 //var item = "strIngredient"
                 for i in 1...20{
                     //append i to end of strings
-                    var amount = "strMeasure\(i)"
-                    var item = "strIngredient\(i)"
+                    let amount = "strMeasure\(i)"
+                    let item = "strIngredient\(i)"
                     //currentRecipeIngredients[i] = R[0]![amount]
                     
                     R.meals?.forEach({ dictionary in
@@ -75,16 +83,17 @@ class RecipeVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
                     
                 }
                 
-                //TODO: Get instructions. Parse them into smaller sentences via period or exclaimation point and put them in array
+                
                 
                 R.meals?.forEach({ dictionary in
-                    var inst = (dictionary["strInstructions"] as? String)!
+                    let inst = (dictionary["strInstructions"] as? String)!
                     
                     self.currentRecipeInstructions = inst.components(separatedBy: ".")
                     
+                    /*
                     for i in self.currentRecipeInstructions{
                         print("<< \(i)>>")
-                    }
+                    }*/
                 })
                 
                
@@ -106,7 +115,7 @@ class RecipeVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
         let url = URL(string: urlString)!
         print(url)
         
-        let task = URLSession.shared.dataTask(with: url) { data, response, error in
+        URLSession.shared.dataTask(with: url) { data, response, error in
             
             guard let data = data else{
 
